@@ -8,23 +8,27 @@ figurak = "ász bubi lovas dáma király".split()
 
 class Lap:
     def __init__(self, szin, figura):
-        if szin == 'tarokk':
+        self.szin = szin
+        self.figura = figura
+
+        # validate args
+        if self.is_tarokk():
             assert figura in tarokkok
         else:
             assert szin in szinek
             assert figura in figurak
 
-        self.szin = szin
-        self.figura = figura
-
     def __str__(self):
-        return self.figura if self.szin == 'tarokk' else f"{self.szin} {self.figura}"
+        return self.figura if self.is_tarokk() else f"{self.szin} {self.figura}"
 
     def __repr__(self):
         return self.__str__()
 
+    def is_tarokk(self):
+        return self.szin == 'tarokk'
+
     def ertek(self):
-        if self.szin == 'tarokk':
+        if self.is_tarokk():
             return 5 if self.figura in honorok else 1
         else:
             return 1 + figurak.index(self.figura)
