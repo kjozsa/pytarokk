@@ -20,26 +20,39 @@ class Lap:
     def ertek(self):
         if self.szin == 'tarokk':
             return 5 if self.figura in honorok else 1
+        else:
+            return figurak.index(self.figura)
 
 
 class Pakli:
-    lapok = [Lap(szin, figura)
-             for szin in szinek
-             for figura in figurak] + \
-            [Lap("tarokk", tarokk) for tarokk in tarokkok]
-    shuffle(lapok)
+    _lapok = [Lap(szin, figura)
+              for szin in szinek
+              for figura in figurak] + \
+             [Lap("tarokk", tarokk) for tarokk in tarokkok]
+    shuffle(_lapok)
 
     def __len__(self):
-        return len(self.lapok)
+        return len(self._lapok)
 
     def __getitem__(self, position):
-        return self.lapok[position]
+        return self._lapok[position]
 
     def __str__(self):
-        return str(self.lapok)
+        return str(self._lapok)
+
+    def oszt(self, n):
+        lapok = self._lapok[:n]
+        self._lapok = self._lapok[n:]
+        return lapok
 
 
 pakli = Pakli()
 print(f"{len(pakli)} lap a pakliban: {pakli}")
+talon = pakli.oszt(6)
+print(f"{len(pakli)} lap a pakliban: {pakli}")
 
-talon = pakli[0:6]
+vg_lapok = pakli.oszt(9)
+k_lapok = pakli.oszt(9)
+h_lapok = pakli.oszt(9)
+a_lapok = pakli.oszt(9)
+print(f"{len(pakli)} lap a pakliban: {pakli}")
