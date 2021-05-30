@@ -74,11 +74,25 @@ class Asztal:
         for jatekos in self.jatekosok:
             jatekos.lapok = pakli.huz(9)
 
+    def kovetkezo_jatekos(self):
+        if len(self.utes) == 0:
+            return self.jatekosok[0]
+
+        utolso = self.utes[-1][0]
+        index = self.jatekosok.index(utolso)
+        return self.jatekosok[index + 1] if index < 4 else self.jatekosok[0]
+
+    def utes_szine(self):
+        if len(self.utes) == 0:
+            return None
+        else:
+            return self.utes[0][1].szin
+
     def rak(self, jatekos, lap):
-        assert jatekos in self.jatekosok  # jatszik
-        assert lap in jatekos.lapok  # o lapja
-        assert jatekos not in [x[0] for x in self.utes]  # nem rakott meg
-        # TODO assert szabalyos rakas
+        assert jatekos == self.kovetkezo_jatekos()  # ő jön
+        assert lap in jatekos.lapok  # ő lapja
+        if len(self.utes) != 0:
+            assert lap in jatekos.kirakhato_lapok(self.utes_szine())  # szabályos
 
         logging.debug(f"{jatekos} hív: {lap}")
         jatekos.lapok.remove(lap)
@@ -86,6 +100,11 @@ class Asztal:
         if len(self.utes) == 4:
             logging.debug("új ütés")
             self.utes = []
+
+    def kovetkezo_random(self):
+        jatekos = self.kovetkezo_jatekos()
+        lap = choice(jatekos.kirakhato_lapok(self.utes_szine()))
+        self.rak(jatekos, lap)
 
 
 class Jatekos:
@@ -99,8 +118,11 @@ class Jatekos:
         return self.nev
 
     def kirakhato_lapok(self, szin):
-        olyan_szinu = filter(lambda lap: lap.szin == szin, self.lapok)
-        tarokkok = filter(lambda lap: lap.is_tarokk(), self.lapok)
-        return olyan_szinu if len(olyan_szinu) != 0 \
-            else tarokkok if len(tarokkok) != 0 \
-            else self.lapok
+        olyan_szinu = [lap for lap in self.lapok if lap.szin == szin]
+        tarokkok = [lap for lap in self.lapok if lap.is_tarokk()]
+
+        if len(olyan_szinu) != 0:
+            return olyan_szinu
+        if len(tarokkok) != 0:
+            return tarokkok
+        return self.lapok

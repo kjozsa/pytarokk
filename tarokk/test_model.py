@@ -54,9 +54,18 @@ def test_jatek():
     asztal.leul(a)
     assert len(h.lapok) == 9
 
-    asztal.rak(h, h.lapok[0])
-    with pytest.raises(AssertionError):
-        asztal.rak(h, h.lapok[0])   # mar rakott
+    assert asztal.kovetkezo_jatekos() == k
 
+    asztal.rak(k, k.lapok[0])
+    with pytest.raises(AssertionError):
+        asztal.rak(k, k.lapok[0])   # már rakott
+
+    with pytest.raises(AssertionError):
+        asztal.rak(h, k.lapok[0])   # nem az ő lapja
+
+    asztal.kovetkezo_random()
+    asztal.kovetkezo_random()
+    asztal.kovetkezo_random()
+    asztal.kovetkezo_random()
 
 
