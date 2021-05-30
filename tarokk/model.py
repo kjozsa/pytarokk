@@ -7,7 +7,13 @@ figurak = "ász bubi lovas dáma király".split()
 
 
 class Lap:
-    def __init__(self, szin, figura, **kwargs):
+    def __init__(self, szin, figura):
+        if szin == 'tarokk':
+            assert figura in tarokkok
+        else:
+            assert szin in szinek
+            assert figura in figurak
+
         self.szin = szin
         self.figura = figura
 
@@ -21,7 +27,7 @@ class Lap:
         if self.szin == 'tarokk':
             return 5 if self.figura in honorok else 1
         else:
-            return figurak.index(self.figura)
+            return 1 + figurak.index(self.figura)
 
 
 class Pakli:
@@ -44,15 +50,3 @@ class Pakli:
         lapok = self._lapok[:n]
         self._lapok = self._lapok[n:]
         return lapok
-
-
-pakli = Pakli()
-print(f"{len(pakli)} lap a pakliban: {pakli}")
-talon = pakli.oszt(6)
-print(f"{len(pakli)} lap a pakliban: {pakli}")
-
-vg_lapok = pakli.oszt(9)
-k_lapok = pakli.oszt(9)
-h_lapok = pakli.oszt(9)
-a_lapok = pakli.oszt(9)
-print(f"{len(pakli)} lap a pakliban: {pakli}")
