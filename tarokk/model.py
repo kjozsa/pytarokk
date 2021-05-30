@@ -25,6 +25,9 @@ class Lap:
     def __repr__(self):
         return self.__str__()
 
+    def __lt__(self, other):
+        return self.erosseg() < other.erosseg()
+
     def is_tarokk(self):
         return self.szin == 'tarokk'
 
@@ -33,6 +36,12 @@ class Lap:
             return 5 if self.figura in honorok else 1
         else:
             return 1 + figurak.index(self.figura)
+
+    def erosseg(self):
+        if not self.is_tarokk():
+            return figurak.index(self.figura)
+        else:
+            return 10 + tarokkok.index(self.figura)
 
 
 class Pakli:
@@ -59,8 +68,10 @@ class Pakli:
 
 class Asztal:
     jatekosok = []
+    hivo = ""
     talon = []
     utes = []
+    viszi = None
 
     def leul(self, jatekos):
         self.jatekosok.append(jatekos)
@@ -72,15 +83,17 @@ class Asztal:
         pakli = Pakli()
         self.talon = pakli.huz(6)
         for jatekos in self.jatekosok:
-            jatekos.lapok = pakli.huz(9)
+            jatekos.lapok = sorted(pakli.huz(9))
+            logging.warning(f"{jatekos}: {jatekos.lapok}")
+        self.hivo = self.jatekosok[0]
 
     def kovetkezo_jatekos(self):
         if len(self.utes) == 0:
-            return self.jatekosok[0]
+            return self.hivo
 
         utolso = self.utes[-1][0]
         index = self.jatekosok.index(utolso)
-        return self.jatekosok[index + 1] if index < 4 else self.jatekosok[0]
+        return self.jatekosok[index + 1] if index < 3 else self.jatekosok[0]
 
     def utes_szine(self):
         if len(self.utes) == 0:
@@ -95,13 +108,23 @@ class Asztal:
             assert lap in jatekos.kirakhato_lapok(self.utes_szine())  # szabályos
 
         logging.debug(f"{jatekos} hív: {lap}")
+
         jatekos.lapok.remove(lap)
         self.utes.append((jatekos, lap))
-        if len(self.utes) == 4:
-            logging.debug("új ütés")
-            self.utes = []
 
-    def kovetkezo_random(self):
+        if self.viszi == None:
+            self.viszi = (jatekos, lap)
+        else:
+            if self.viszi[1].erosseg() < lap.erosseg():
+                self.viszi = (jatekos, lap)
+
+        if len(self.utes) == 4:
+            self.utes = []
+            self.hivo = self.viszi[0]
+            logging.info(f"Legerősebb a {self.viszi[1]}, elvitte {self.viszi[0]}")
+            self.viszi = None
+
+    def kovetkezo_rak_random(self):
         jatekos = self.kovetkezo_jatekos()
         lap = choice(jatekos.kirakhato_lapok(self.utes_szine()))
         self.rak(jatekos, lap)

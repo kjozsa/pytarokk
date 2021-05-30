@@ -63,9 +63,7 @@ def test_jatek():
     with pytest.raises(AssertionError):
         asztal.rak(h, k.lapok[0])   # nem az ő lapja
 
-    asztal.kovetkezo_random()
-    asztal.kovetkezo_random()
-    asztal.kovetkezo_random()
-    asztal.kovetkezo_random()
+    for i in range(35):
+        asztal.kovetkezo_rak_random()
 
 
