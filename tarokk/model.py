@@ -95,7 +95,7 @@ class Asztal:
         index = self.jatekosok.index(utolso)
         return self.jatekosok[index + 1] if index < 3 else self.jatekosok[0]
 
-    def utes_szine(self):
+    def hivas_szine(self):
         if len(self.utes) == 0:
             return None
         else:
@@ -105,18 +105,19 @@ class Asztal:
         assert jatekos == self.kovetkezo_jatekos()  # ő jön
         assert lap in jatekos.lapok  # ő lapja
         if len(self.utes) != 0:
-            assert lap in jatekos.kirakhato_lapok(self.utes_szine())  # szabályos
+            assert lap in jatekos.kirakhato_lapok(self.hivas_szine())  # szabályos
 
         logging.debug(f"{jatekos} hív: {lap}")
 
         jatekos.lapok.remove(lap)
         self.utes.append((jatekos, lap))
 
-        if self.viszi == None:
+        if self.viszi is None:
             self.viszi = (jatekos, lap)
         else:
-            if self.viszi[1].erosseg() < lap.erosseg():
-                self.viszi = (jatekos, lap)
+            if lap.erosseg() > self.viszi[1].erosseg():
+                if not lap.is_tarokk() and lap.szin == self.hivas_szine():
+                    self.viszi = (jatekos, lap)
 
         if len(self.utes) == 4:
             self.utes = []
@@ -126,7 +127,7 @@ class Asztal:
 
     def kovetkezo_rak_random(self):
         jatekos = self.kovetkezo_jatekos()
-        lap = choice(jatekos.kirakhato_lapok(self.utes_szine()))
+        lap = choice(jatekos.kirakhato_lapok(self.hivas_szine()))
         self.rak(jatekos, lap)
 
 
