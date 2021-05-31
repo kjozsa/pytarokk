@@ -69,9 +69,15 @@ def test_jatek():
         asztal.kovetkezo_rak_random()
 
     # játék vége
-    assert len([*h.elvitt, *k.elvitt, *a.elvitt, *vg.elvitt]) == 42 - 6
+    osszes_elvitt = [*h.elvitt, *k.elvitt, *a.elvitt, *vg.elvitt]
+    assert len(osszes_elvitt) == 42 - 6
+    assert sum([lap.ertek() for lap in [*osszes_elvitt, *asztal.talon]]) == 94
+
     for jatekos in [h, a, vg, k]:
-        logging.info(f"{jatekos} elvitt {int(len(jatekos.elvitt) / 4)} ütést: {jatekos.elvitt}")
+        pont = sum([lap.ertek() for lap in jatekos.elvitt])
+        logging.info(f"{jatekos} elvitt {int(len(jatekos.elvitt) / 4)} ütést, {pont} értékben: {jatekos.elvitt}")
+
+
 
 
 def test_kiviszi():
