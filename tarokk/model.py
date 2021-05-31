@@ -1,5 +1,7 @@
+import collections
 from random import shuffle, choice
 import logging
+from typing import List, Any
 
 tarokkok = "I II III IV V VI VII VIII IX X XI XII XIII XIV XV XVI XVII XVIII XIX XX XXI Skiz".split()
 honorok = "I XXI Skiz".split()
@@ -12,7 +14,6 @@ class Lap:
         self.szin = szin
         self.figura = figura
 
-        # validate args
         if self.is_tarokk():
             assert figura in tarokkok
         else:
@@ -43,6 +44,14 @@ class Lap:
         else:
             return 10 + tarokkok.index(self.figura)
 
+    def relativ_erosseg(self, hivott_lap):
+        if self.szin == hivott_lap.szin:
+            return self.erosseg()
+        elif self.szin == "tarokk":
+            return 100 + self.erosseg()
+        else:
+            return -1
+
 
 class Pakli:
     _lapok = [Lap(szin, figura)
@@ -66,12 +75,14 @@ class Pakli:
         return lapok
 
 
+Hivas = collections.namedtuple('Hivas', ['jatekos', 'lap'])
+
+
 class Asztal:
     jatekosok = []
     hivo = ""
-    talon = []
-    utes = []
-    viszi = None
+    talon: list[Lap] = []
+    utes: list[Hivas] = []
 
     def leul(self, jatekos):
         self.jatekosok.append(jatekos)
@@ -91,7 +102,7 @@ class Asztal:
         if len(self.utes) == 0:
             return self.hivo
 
-        utolso = self.utes[-1][0]
+        utolso = self.utes[-1].jatekos
         index = self.jatekosok.index(utolso)
         return self.jatekosok[index + 1] if index < 3 else self.jatekosok[0]
 
@@ -99,7 +110,7 @@ class Asztal:
         if len(self.utes) == 0:
             return None
         else:
-            return self.utes[0][1].szin
+            return self.utes[0].lap.szin
 
     def rak(self, jatekos, lap):
         assert jatekos == self.kovetkezo_jatekos()  # ő jön
@@ -110,25 +121,22 @@ class Asztal:
         logging.debug(f"{jatekos} hív: {lap}")
 
         jatekos.lapok.remove(lap)
-        self.utes.append((jatekos, lap))
-
-        if self.viszi is None:
-            self.viszi = (jatekos, lap)
-        else:
-            if lap.erosseg() > self.viszi[1].erosseg():
-                if not lap.is_tarokk() and lap.szin == self.hivas_szine():
-                    self.viszi = (jatekos, lap)
+        self.utes.append(Hivas(jatekos, lap))
 
         if len(self.utes) == 4:
+            viszi = self.kiviszi(self.utes)
+            logging.info(f"Legerősebb a {viszi.lap}, elvitte {viszi.jatekos}")
             self.utes = []
-            self.hivo = self.viszi[0]
-            logging.info(f"Legerősebb a {self.viszi[1]}, elvitte {self.viszi[0]}")
-            self.viszi = None
+            self.hivo = viszi.jatekos
 
     def kovetkezo_rak_random(self):
         jatekos = self.kovetkezo_jatekos()
         lap = choice(jatekos.kirakhato_lapok(self.hivas_szine()))
         self.rak(jatekos, lap)
+
+    @staticmethod
+    def kiviszi(utes):
+        return max(utes, key=lambda hivas: hivas.lap.relativ_erosseg(utes[0].lap))
 
 
 class Jatekos:

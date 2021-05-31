@@ -33,9 +33,9 @@ def test_lap():
     assert Lap("pikk", "dáma").ertek() == 4
 
     with pytest.raises(AssertionError):
-        assert Lap("NOSUCH", "ász").ertek() == 1
+        Lap("NOSUCH", "ász")
     with pytest.raises(AssertionError):
-        assert Lap("káró", "NOSUCH").ertek() == 1
+        Lap("káró", "NOSUCH")
 
 
 def test_jatek():
@@ -61,9 +61,37 @@ def test_jatek():
         asztal.rak(k, k.lapok[0])   # már rakott
 
     with pytest.raises(AssertionError):
-        asztal.rak(h, k.lapok[0])   # nem az ő lapja
+        asztal.rak(h, a.lapok[0])   # nem az ő lapja
 
     for i in range(35):
         asztal.kovetkezo_rak_random()
 
 
+def test_kiviszi():
+    assert Asztal.kiviszi([
+        Hivas('A', Lap('káró', 'lovas')),
+        Hivas('B', Lap('tarokk', 'I')),
+        Hivas('C', Lap('tarokk', 'XVI')),
+        Hivas('D', Lap('pikk', 'dáma'))
+    ]).jatekos == 'C'
+
+    assert Asztal.kiviszi([
+        Hivas('C', Lap('tarokk', 'XVI')),
+        Hivas('A', Lap('káró', 'lovas')),
+        Hivas('B', Lap('tarokk', 'I')),
+        Hivas('D', Lap('pikk', 'dáma'))
+    ]).jatekos == 'C'
+
+    assert Asztal.kiviszi([
+        Hivas('D', Lap('pikk', 'dáma')),
+        Hivas('A', Lap('káró', 'lovas')),
+        Hivas('B', Lap('tarokk', 'I')),
+        Hivas('C', Lap('tarokk', 'XVI'))
+    ]).jatekos == 'C'
+
+    assert Asztal.kiviszi([
+        Hivas('A', Lap('treff', 'ász')),
+        Hivas('B', Lap('pikk', 'lovas')),
+        Hivas('C', Lap('kőr', 'király')),
+        Hivas('D', Lap('káró', 'dáma'))
+    ]).jatekos == 'A'
