@@ -44,10 +44,8 @@ class Lap:
             return figurak.index(self.figura) + 10 * szinek.index(self.szin)
 
     def relativ_erosseg(self, hivott_lap):
-        if self.szin == hivott_lap.szin:
+        if self.szin == hivott_lap.szin or self.is_tarokk():
             return self.erosseg()
-        elif self.is_tarokk():
-            return 100 + self.erosseg()
         else:
             return -1
 
@@ -61,12 +59,6 @@ class Pakli:
 
     def __len__(self):
         return len(self._lapok)
-
-    def __getitem__(self, position):
-        return self._lapok[position]
-
-    def __str__(self):
-        return str(self._lapok)
 
     def huz(self, n):
         lapok = self._lapok[:n]
@@ -84,6 +76,7 @@ class Asztal:
     utes: list[Hivas] = []
 
     def leul(self, jatekos):
+        assert jatekos not in self.jatekosok
         self.jatekosok.append(jatekos)
         if len(self.jatekosok) == 4:
             self.osztas()

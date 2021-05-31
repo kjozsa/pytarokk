@@ -49,6 +49,8 @@ def test_jatek():
 
     asztal = Asztal()
     asztal.leul(k)
+    with pytest.raises(AssertionError):
+        asztal.leul(k)  # már játszik
     asztal.leul(h)
     asztal.leul(vg)
     asztal.leul(a)
