@@ -113,22 +113,22 @@ def test_jatek():
     for i in range(35):
         asztal.kovetkezo_rak_random()
 
-    # játék vége
+    logging.info("Vége a játéknak")
     osszes_elvitt = [*h.elvitt, *k.elvitt, *a.elvitt, *vg.elvitt]
     assert len(osszes_elvitt) == 42 - 6
     assert sum([lap.ertek() for lap in [*osszes_elvitt, *asztal.talon]]) == 94
 
     for jatekos in [h, a, vg, k]:
         pont = sum([lap.ertek() for lap in jatekos.elvitt])
-        logging.info(f"{jatekos} elvitt {int(len(jatekos.elvitt) / 4)} ütést, {pont} pont értékben: {jatekos.elvitt}")
+        logging.debug(f"{jatekos} elvitt {int(len(jatekos.elvitt) / 4)} ütést, {pont} pont értékben: {jatekos.elvitt}")
 
 
 def test_XXI_fogas():
     aktualis_utes = [Hivas(k, XXI),
                      Hivas(h, XX),
                      Hivas(a, Skiz),
-                     Hivas(vg, Pagát)]
-    result = XXI_fogas.check(parok, None, aktualis_utes)
+                     Hivas(vg, Pagat)]
+    result = XXI_fogas().check(parok, None, aktualis_utes)
     logging.info(result)
     assert result
 
@@ -140,6 +140,6 @@ def test_Sas_ulti():
                      Hivas(h, Lap('treff', 'dáma')),
                      Hivas(a, Lap('pikk', 'király')),
                      Hivas(vg, II)]
-    result = Sas_ulti.check(parok, utesek, aktualis_utes)
+    result = Sas_ulti().check(parok, utesek, aktualis_utes)
     logging.info(result)
     assert result

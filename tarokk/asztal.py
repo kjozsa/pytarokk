@@ -1,8 +1,8 @@
 import logging
 from random import choice
-from tarokk import *
-from tarokk.jatekos import *
+
 from tarokk.bemondasok import *
+from tarokk.jatekos import *
 
 
 class Asztal:

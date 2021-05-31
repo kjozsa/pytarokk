@@ -1,40 +1,78 @@
 from tarokk import *
+from tarokk.jatekos import Jatekos
 from tarokk.kartya import *
 
-Pagát = Lap('tarokk', 'I')
+Pagat = Lap('tarokk', 'I')
 II = Lap('tarokk', 'II')
 XX = Lap('tarokk', 'XX')
 XXI = Lap('tarokk', 'XXI')
 Skiz = Lap('tarokk', 'Skiz')
 
 
-class XXI_fogas:
+class Bemondas:
+    def __init__(self, bemondas_neve):
+        self.bemondta = None
+        self.bemondas_neve = bemondas_neve
+        self.kontra = 1
+
+    def forint(self):
+        return 10 * int(self.ertek * self.kontra * (0.5 if self.is_csendes() else 1))
+
+    def is_csendes(self):
+        return self.bemondta is None
+
+    def ertekeles(self, extra_info):
+        return f"{self.bemondas_neve}, {extra_info}, {self.forint()} forintért"
+
+
+class XXI_fogas(Bemondas):
     ertek = 42
 
-    @staticmethod
-    def check(parok, utesek, aktualis_utes):
-        xxi = next(iter([hivas.jatekos for hivas in aktualis_utes if hivas.lap == XXI]), None)
-        skiz = next(iter([hivas.jatekos for hivas in aktualis_utes if hivas.lap == Skiz]), None)
+    def __init__(self):
+        super().__init__("XXI fogás")
+
+    def check(self, parok, utesek, aktualis_utes):
+        xxi: Jatekos = next(iter([hivas.jatekos for hivas in aktualis_utes if hivas.lap == XXI]), None)
+        skiz: Jatekos = next(iter([hivas.jatekos for hivas in aktualis_utes if hivas.lap == Skiz]), None)
         if xxi and skiz:
-            return f"XXI fogás, {skiz} megfogta {xxi} XXI-ét"
+            return self.ertekeles(f"{skiz} megfogta {xxi} XXI-ét")
         return None
 
 
-class Pagat_ulti:
+class Pagat_ulti(Bemondas):
     ertek = 10
 
-    @staticmethod
-    def check(parok, utesek, aktualis_utes):
-        viszi = ki_viszi(aktualis_utes)
-        return f"Pagát ulti, {viszi.jatekos}" if len(utesek) == 8 and viszi.lap == Pagát else None
+    def __init__(self):
+        super().__init__("Pagát ulti")
 
-class Sas_ulti:
+    def check(self, parok, utesek, aktualis_utes):
+        viszi = ki_viszi(aktualis_utes)
+        if len(utesek) == 8 and viszi.lap == Pagat:
+            return self.ertekeles(f"{viszi.jatekos}")
+        return None
+
+
+class Sas_ulti(Bemondas):
     ertek = 10
 
-    @staticmethod
-    def check(parok, utesek, aktualis_utes):
+    def __init__(self):
+        super().__init__("Sas ulti")
+
+    def check(self, parok, utesek, aktualis_utes):
         viszi = ki_viszi(aktualis_utes)
-        return f"Sas ulti, {viszi.jatekos}" if len(utesek) == 8 and viszi.lap == II else None
+        if len(utesek) == 8 and viszi.lap == II:
+            return self.ertekeles(f"{viszi.jatekos}")
+        return None
 
 
-bemondasok = [XXI_fogas, Pagat_ulti, Sas_ulti]
+class Tuletroa(Bemondas):
+    ertek = 2
+
+    def __init__(self):
+        super().__init__("Tuletroá")
+
+    def check(self, parok, utesek, aktualis_utes):
+        return
+
+
+bemondasok = [XXI_fogas(), Pagat_ulti(), Sas_ulti(), Tuletroa()]

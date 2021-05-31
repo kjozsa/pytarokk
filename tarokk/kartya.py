@@ -1,6 +1,7 @@
-from tarokk import *
 import collections
 from random import shuffle
+
+from tarokk import *
 
 Hivas = collections.namedtuple('Hivas', ['jatekos', 'lap'])
 
