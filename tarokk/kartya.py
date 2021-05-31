@@ -64,11 +64,11 @@ class Lap:
 
 
 class Pakli:
-    def __init__(self):
+    def __init__(self, lapok=None):
         self._lapok = [Lap(szin, figura)
                        for szin in szinek
                        for figura in figurak] + \
-                      [Lap("tarokk", tarokk) for tarokk in tarokkok]
+                      [Lap("tarokk", tarokk) for tarokk in tarokkok] if lapok is None else lapok
         shuffle(self._lapok)
 
     def __len__(self):

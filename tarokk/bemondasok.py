@@ -54,7 +54,6 @@ class Pagat_ulti(Bemondas):
             return self.ertekeles(viszi.jatekos.csapat(parok), f"{viszi.jatekos}")
 
 
-
 class Sas_ulti(Bemondas):
     ertek = 10
 
@@ -81,6 +80,24 @@ class Tuletroa(Bemondas):
         ellenpare = [lap for sublist in [jatekos.elvitt for jatekos in parok.ellenpar] for lap in sublist]
         if {Pagat, XXI, Skiz}.issubset(ellenpare):
             return self.ertekeles(parok.ellenpar, "az ellenpárnak")
+
+
+class Parti(Bemondas):
+    def __init__(self, licitalt_jatek):
+        super().__init__("Parti")
+        self.bemondta = True
+        self.ertek = 4 - licitalt_jatek
+
+    def check(self, parok, utesek, aktualis_utes):
+        felvevoke = [lap for sublist in [jatekos.elvitt for jatekos in parok.felvevok] for lap in sublist]
+        felvevo_pont = sum([lap.ertek() for lap in felvevoke])
+        if felvevo_pont > 47:
+            return self.ertekeles(parok.felvevok, f"a felvevő páré {felvevo_pont} ponttal")
+
+        ellenpare = [lap for sublist in [jatekos.elvitt for jatekos in parok.ellenpar] for lap in sublist]
+        ellenpar_pont = sum([lap.ertek() for lap in ellenpare])
+        if ellenpar_pont >= 47:
+            return self.ertekeles(parok.ellenpar, f"az ellenpáré {ellenpar_pont} ponttal")
 
 
 bemondasok = [XXI_fogas(), Pagat_ulti(), Sas_ulti(), Tuletroa()]

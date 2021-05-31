@@ -8,8 +8,7 @@ vg = Jatekos("Vinczeg")
 a = Jatekos("Attila")
 
 parok = Parok([k, h], [a, vg])
-assert(h.is_felvevo(parok))
-assert(a.is_ellenpar(parok))
+assert(k in h.csapat(parok))
 
 def test_pakli():
     """
@@ -115,10 +114,9 @@ def test_jatek():
     for i in range(35):
         asztal.kovetkezo_rak_random()
 
-    logging.info("Vége a játéknak")
     osszes_elvitt = [*h.elvitt, *k.elvitt, *a.elvitt, *vg.elvitt]
-    assert len(osszes_elvitt) == 42 - 6
-    assert sum([lap.ertek() for lap in [*osszes_elvitt, *asztal.talon]]) == 94
+    assert len(osszes_elvitt) == 42
+    assert sum([lap.ertek() for lap in [*osszes_elvitt]]) == 94
 
     for jatekos in [h, a, vg, k]:
         pont = sum([lap.ertek() for lap in jatekos.elvitt])

@@ -19,6 +19,9 @@ class Jatekos:
     def csapat(self, parok: Parok):
         return parok.felvevok if self in parok.felvevok else parok.ellenpar
 
+    def elvisz(self, lapok: list[Lap]):
+        self.elvitt.extend(lapok)
+
     def kirakhato_lapok(self, szin):
         """
         játékos hívott színre rakható lapjai
