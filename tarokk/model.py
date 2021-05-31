@@ -1,7 +1,6 @@
 import collections
 from random import shuffle, choice
 import logging
-from typing import List, Any
 
 tarokkok = "I II III IV V VI VII VIII IX X XI XII XIII XIV XV XVI XVII XVIII XIX XX XXI Skiz".split()
 honorok = "I XXI Skiz".split()
@@ -39,15 +38,15 @@ class Lap:
             return 1 + figurak.index(self.figura)
 
     def erosseg(self):
-        if not self.is_tarokk():
-            return figurak.index(self.figura)
+        if self.is_tarokk():
+            return 100 + tarokkok.index(self.figura)
         else:
-            return 10 + tarokkok.index(self.figura)
+            return figurak.index(self.figura) + 10 * szinek.index(self.szin)
 
     def relativ_erosseg(self, hivott_lap):
         if self.szin == hivott_lap.szin:
             return self.erosseg()
-        elif self.szin == "tarokk":
+        elif self.is_tarokk():
             return 100 + self.erosseg()
         else:
             return -1
