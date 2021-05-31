@@ -6,7 +6,8 @@ k = Jatekos("Kristóf")
 h = Jatekos("Hoba")
 vg = Jatekos("Vinczeg")
 a = Jatekos("Attila")
-parok = ([k, h], [a, vg])
+
+parok = Parok([k, h], [a, vg])
 
 
 def test_pakli():
@@ -135,7 +136,6 @@ def test_XXI_fogas():
 
 def test_Sas_ulti():
     utesek = [None] * 8
-    assert len(utesek) == 8
     aktualis_utes = [Hivas(k, Lap('treff', 'bubi')),
                      Hivas(h, Lap('treff', 'dáma')),
                      Hivas(a, Lap('pikk', 'király')),

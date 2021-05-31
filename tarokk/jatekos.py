@@ -1,5 +1,7 @@
 from tarokk.kartya import *
 
+Parok = collections.namedtuple('Parok', ['felvevo', 'ellenpar'])
+
 
 class Jatekos:
     def __init__(self, nev):

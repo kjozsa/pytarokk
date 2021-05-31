@@ -29,6 +29,9 @@ class Lap:
     def __lt__(self, other):
         return self.erosseg() < other.erosseg()
 
+    def __hash__(self):
+        return hash(self.szin) * hash(self.figura)
+
     def is_tarokk(self):
         return self.szin == 'tarokk'
 

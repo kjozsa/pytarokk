@@ -1,6 +1,6 @@
-from tarokk import *
 from tarokk.jatekos import Jatekos
 from tarokk.kartya import *
+import logging
 
 Pagat = Lap('tarokk', 'I')
 II = Lap('tarokk', 'II')
@@ -14,6 +14,7 @@ class Bemondas:
         self.bemondta = None
         self.bemondas_neve = bemondas_neve
         self.kontra = 1
+        self.meglett = False
 
     def forint(self):
         return 10 * int(self.ertek * self.kontra * (0.5 if self.is_csendes() else 1))
@@ -21,8 +22,10 @@ class Bemondas:
     def is_csendes(self):
         return self.bemondta is None
 
-    def ertekeles(self, extra_info):
-        return f"{self.bemondas_neve}, {extra_info}, {self.forint()} forintért"
+    def ertekeles(self, kommentar=""):
+        if self.meglett is False:
+            self.meglett = True
+            return f"{self.bemondas_neve}, {kommentar}, {self.forint()} forintért"
 
 
 class XXI_fogas(Bemondas):
@@ -36,7 +39,6 @@ class XXI_fogas(Bemondas):
         skiz: Jatekos = next(iter([hivas.jatekos for hivas in aktualis_utes if hivas.lap == Skiz]), None)
         if xxi and skiz:
             return self.ertekeles(f"{skiz} megfogta {xxi} XXI-ét")
-        return None
 
 
 class Pagat_ulti(Bemondas):
@@ -49,7 +51,7 @@ class Pagat_ulti(Bemondas):
         viszi = ki_viszi(aktualis_utes)
         if len(utesek) == 8 and viszi.lap == Pagat:
             return self.ertekeles(f"{viszi.jatekos}")
-        return None
+
 
 
 class Sas_ulti(Bemondas):
@@ -61,8 +63,7 @@ class Sas_ulti(Bemondas):
     def check(self, parok, utesek, aktualis_utes):
         viszi = ki_viszi(aktualis_utes)
         if len(utesek) == 8 and viszi.lap == II:
-            return self.ertekeles(f"{viszi.jatekos}")
-        return None
+            return self.ertekeles(f"{viszi.jatekos} csinálta")
 
 
 class Tuletroa(Bemondas):
@@ -72,7 +73,12 @@ class Tuletroa(Bemondas):
         super().__init__("Tuletroá")
 
     def check(self, parok, utesek, aktualis_utes):
-        return
+        felvevoke = [lap for sublist in [jatekos.elvitt for jatekos in parok[0]] for lap in sublist]
+        ellenpare = [lap for sublist in [jatekos.elvitt for jatekos in parok[1]] for lap in sublist]
+        if {Pagat, XXI, Skiz}.issubset(felvevoke):
+            return self.ertekeles("a felvevő párnak")
+        if {Pagat, XXI, Skiz}.issubset(ellenpare):
+            return self.ertekeles("az ellenpárnak")
 
 
 bemondasok = [XXI_fogas(), Pagat_ulti(), Sas_ulti(), Tuletroa()]

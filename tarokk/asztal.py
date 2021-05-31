@@ -9,10 +9,10 @@ class Asztal:
     def __init__(self):
         self.jatekosok: list[Jatekos] = []
         self.talon: list[Lap] = []
-        self.utesek: list[list[Hivas]] = []
+        self.utesek: list[Hivas] = []
         self.aktualis_utes: list[Hivas] = []
         self.hivo: Jatekos = None
-        self.parok = ()
+        self.parok = Parok
 
     def leul(self, jatekos):
         assert jatekos not in self.jatekosok
@@ -39,9 +39,7 @@ class Asztal:
         return self.jatekosok[index + 1] if index < 3 else self.jatekosok[0]
 
     def hivas_szine(self):
-        if len(self.aktualis_utes) == 0:
-            return None
-        else:
+        if len(self.aktualis_utes) != 0:
             return self.aktualis_utes[0].lap.szin
 
     def rak(self, jatekos, lap):
@@ -71,6 +69,7 @@ class Asztal:
         self.utesek.extend(self.aktualis_utes)
         self.aktualis_utes = []
         self.hivo = viszi.jatekos
+
 
     def kovetkezo_rak_random(self):
         jatekos = self.kovetkezo_jatekos()
