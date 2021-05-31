@@ -11,6 +11,9 @@ class Jatekos:
     def __str__(self):
         return self.nev
 
+    def __repr__(self):
+        return self.nev
+
     def kirakhato_lapok(self, szin):
         """
         játékos hívott színre rakható lapjai

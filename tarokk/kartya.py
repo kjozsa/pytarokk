@@ -78,3 +78,6 @@ class Pakli:
         self._lapok = self._lapok[n:]
         return lapok
 
+
+def ki_viszi(aktualis_utes):
+    return max(aktualis_utes, key=lambda hivas: hivas.lap.relativ_erosseg(aktualis_utes[0].lap))

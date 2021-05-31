@@ -59,7 +59,7 @@ class Asztal:
             self.aktualis_utes_vege()
 
     def aktualis_utes_vege(self):
-        viszi = self.kiviszi(self.aktualis_utes)
+        viszi = ki_viszi(self.aktualis_utes)
         logging.info(f"Legerősebb a {viszi.lap}, elvitte {viszi.jatekos}")
         viszi.jatekos.elvitt.extend([x.lap for x in self.aktualis_utes])
 
@@ -76,7 +76,3 @@ class Asztal:
         jatekos = self.kovetkezo_jatekos()
         lap = choice(jatekos.kirakhato_lapok(self.hivas_szine()))
         self.rak(jatekos, lap)
-
-    @staticmethod
-    def kiviszi(aktualis_utes):
-        return max(aktualis_utes, key=lambda hivas: hivas.lap.relativ_erosseg(aktualis_utes[0].lap))

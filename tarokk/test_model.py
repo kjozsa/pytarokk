@@ -2,6 +2,12 @@ from tarokk.asztal import *
 from tarokk.bemondasok import *
 import pytest
 
+k = Jatekos("Kristóf")
+h = Jatekos("Hoba")
+vg = Jatekos("Vinczeg")
+a = Jatekos("Attila")
+parok = ([k, h], [a, vg])
+
 
 def test_pakli():
     """
@@ -40,28 +46,28 @@ def test_lap():
 
 
 def test_kiviszi():
-    assert Asztal.kiviszi([
+    assert ki_viszi([
         Hivas('A', Lap('káró', 'lovas')),
         Hivas('B', Lap('tarokk', 'I')),
         Hivas('C', Lap('tarokk', 'XVI')),
         Hivas('D', Lap('pikk', 'dáma'))
     ]).jatekos == 'C'
 
-    assert Asztal.kiviszi([
+    assert ki_viszi([
         Hivas('C', Lap('tarokk', 'XVI')),
         Hivas('A', Lap('káró', 'lovas')),
         Hivas('B', Lap('tarokk', 'I')),
         Hivas('D', Lap('pikk', 'dáma'))
     ]).jatekos == 'C'
 
-    assert Asztal.kiviszi([
+    assert ki_viszi([
         Hivas('D', Lap('pikk', 'dáma')),
         Hivas('A', Lap('káró', 'lovas')),
         Hivas('B', Lap('tarokk', 'I')),
         Hivas('C', Lap('tarokk', 'XVI'))
     ]).jatekos == 'C'
 
-    assert Asztal.kiviszi([
+    assert ki_viszi([
         Hivas('A', Lap('treff', 'ász')),
         Hivas('B', Lap('pikk', 'lovas')),
         Hivas('C', Lap('kőr', 'király')),
@@ -80,12 +86,6 @@ def test_kirakhato_lapok():
     assert k.kirakhato_lapok('treff') == [Lap('treff', 'lovas')]
     assert k.kirakhato_lapok('pikk') == [Lap('tarokk', 'II'), Lap('tarokk', 'Skiz')]
     assert k.kirakhato_lapok('tarokk') == [Lap('tarokk', 'II'), Lap('tarokk', 'Skiz')]
-
-
-k = Jatekos("Kristóf")
-h = Jatekos("Hoba")
-vg = Jatekos("Vinczeg")
-a = Jatekos("Attila")
 
 
 def test_jatek():
@@ -123,13 +123,23 @@ def test_jatek():
         logging.info(f"{jatekos} elvitt {int(len(jatekos.elvitt) / 4)} ütést, {pont} pont értékben: {jatekos.elvitt}")
 
 
-def test_bemondasok():
+def test_XXI_fogas():
     aktualis_utes = [Hivas(k, XXI),
                      Hivas(h, XX),
                      Hivas(a, Skiz),
                      Hivas(vg, Pagát)]
-    parok = ([k, h], [a, vg])
     result = XXI_fogas.check(parok, None, aktualis_utes)
-    assert result
     logging.info(result)
+    assert result
 
+
+def test_Sas_ulti():
+    utesek = [None] * 8
+    assert len(utesek) == 8
+    aktualis_utes = [Hivas(k, Lap('treff', 'bubi')),
+                     Hivas(h, Lap('treff', 'dáma')),
+                     Hivas(a, Lap('pikk', 'király')),
+                     Hivas(vg, II)]
+    result = Sas_ulti.check(parok, utesek, aktualis_utes)
+    logging.info(result)
+    assert result
