@@ -12,7 +12,7 @@ class Asztal:
         self.utesek: list[Hivas] = []
         self.aktualis_utes: list[Hivas] = []
         self.hivo: Jatekos = None
-        self.parok = Parok
+        self.parok: Parok = Parok
 
     def leul(self, jatekos):
         assert jatekos not in self.jatekosok
@@ -28,7 +28,7 @@ class Asztal:
             jatekos.lapok = sorted(pakli.huz(9))
             logging.warning(f"{jatekos}: {jatekos.lapok}")
         self.hivo = self.jatekosok[0]
-        self.parok = (self.jatekosok[:2], self.jatekosok[2:])
+        self.parok.felvevok, self.parok.ellenpar = (self.jatekosok[:2], self.jatekosok[2:])
 
     def kovetkezo_jatekos(self):
         if len(self.aktualis_utes) == 0:

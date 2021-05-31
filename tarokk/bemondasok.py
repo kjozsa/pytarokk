@@ -14,7 +14,7 @@ class Bemondas:
         self.bemondta = None
         self.bemondas_neve = bemondas_neve
         self.kontra = 1
-        self.meglett = False
+        self.meglett = None
 
     def forint(self):
         return 10 * int(self.ertek * self.kontra * (0.5 if self.is_csendes() else 1))
@@ -22,8 +22,8 @@ class Bemondas:
     def is_csendes(self):
         return self.bemondta is None
 
-    def ertekeles(self, kommentar=""):
-        if self.meglett is False:
+    def ertekeles(self, nyertes, kommentar=""):
+        if self.meglett is None:
             self.meglett = True
             return f"{self.bemondas_neve}, {kommentar}, {self.forint()} forintért"
 
@@ -73,12 +73,13 @@ class Tuletroa(Bemondas):
         super().__init__("Tuletroá")
 
     def check(self, parok, utesek, aktualis_utes):
-        felvevoke = [lap for sublist in [jatekos.elvitt for jatekos in parok[0]] for lap in sublist]
-        ellenpare = [lap for sublist in [jatekos.elvitt for jatekos in parok[1]] for lap in sublist]
+        felvevoke = [lap for sublist in [jatekos.elvitt for jatekos in parok.felvevok] for lap in sublist]
         if {Pagat, XXI, Skiz}.issubset(felvevoke):
-            return self.ertekeles("a felvevő párnak")
+            return self.ertekeles(parok.felvevok, "a felvevő párnak")
+
+        ellenpare = [lap for sublist in [jatekos.elvitt for jatekos in parok.ellenpar] for lap in sublist]
         if {Pagat, XXI, Skiz}.issubset(ellenpare):
-            return self.ertekeles("az ellenpárnak")
+            return self.ertekeles(parok.ellenpar, "az ellenpárnak")
 
 
 bemondasok = [XXI_fogas(), Pagat_ulti(), Sas_ulti(), Tuletroa()]
