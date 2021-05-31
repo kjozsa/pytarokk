@@ -128,5 +128,8 @@ def test_bemondasok():
                      Hivas(h, XX),
                      Hivas(a, Skiz),
                      Hivas(vg, Pagát)]
-    assert XXI_fogas.check(None, aktualis_utes)
+    parok = ([k, h], [a, vg])
+    result = XXI_fogas.check(parok, None, aktualis_utes)
+    assert result
+    logging.info(result)
 

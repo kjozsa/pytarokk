@@ -8,9 +8,15 @@ Skiz = Lap('tarokk', 'Skiz')
 
 
 class XXI_fogas:
+    ertek = 42
+
     @staticmethod
-    def check(utesek, aktualis_utes):
-        lapok = [hivas.lap for hivas in aktualis_utes]
-        return "XXI fogás" if XXI in lapok and Skiz in lapok else None
+    def check(parok, utesek, aktualis_utes):
+        xxi = next(iter([hivas.jatekos for hivas in aktualis_utes if hivas.lap == XXI]), None)
+        skiz = next(iter([hivas.jatekos for hivas in aktualis_utes if hivas.lap == Skiz]), None)
+        if xxi and skiz:
+            return f"XXI fogás, {skiz} megfogta {xxi} XXI-ét"
+        return None
+
 
 bemondasok = [XXI_fogas]

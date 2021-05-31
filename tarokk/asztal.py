@@ -12,6 +12,7 @@ class Asztal:
         self.utesek: list[list[Hivas]] = []
         self.aktualis_utes: list[Hivas] = []
         self.hivo: Jatekos = None
+        self.parok = ()
 
     def leul(self, jatekos):
         assert jatekos not in self.jatekosok
@@ -27,6 +28,7 @@ class Asztal:
             jatekos.lapok = sorted(pakli.huz(9))
             logging.warning(f"{jatekos}: {jatekos.lapok}")
         self.hivo = self.jatekosok[0]
+        self.parok = (self.jatekosok[:2], self.jatekosok[2:])
 
     def kovetkezo_jatekos(self):
         if len(self.aktualis_utes) == 0:
@@ -62,7 +64,7 @@ class Asztal:
         viszi.jatekos.elvitt.extend([x.lap for x in self.aktualis_utes])
 
         for bemondas in bemondasok:
-            result = bemondas.check(self.utesek, self.aktualis_utes)
+            result = bemondas.check(self.parok, self.utesek, self.aktualis_utes)
             if result is not None:
                 logging.critical(f"!! ## {result} ## !!")
 
