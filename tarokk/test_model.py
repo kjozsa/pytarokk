@@ -1,4 +1,4 @@
-from tarokk.model import *
+from tarokk.asztal import *
 import pytest
 
 
@@ -75,9 +75,7 @@ def test_jatek():
 
     for jatekos in [h, a, vg, k]:
         pont = sum([lap.ertek() for lap in jatekos.elvitt])
-        logging.info(f"{jatekos} elvitt {int(len(jatekos.elvitt) / 4)} ütést, {pont} értékben: {jatekos.elvitt}")
-
-
+        logging.info(f"{jatekos} elvitt {int(len(jatekos.elvitt) / 4)} ütést, {pont} pont értékben: {jatekos.elvitt}")
 
 
 def test_kiviszi():
