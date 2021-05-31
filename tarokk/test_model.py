@@ -1,4 +1,5 @@
 from tarokk.asztal import *
+from tarokk.bemondasok import *
 import pytest
 
 
@@ -81,15 +82,16 @@ def test_kirakhato_lapok():
     assert k.kirakhato_lapok('tarokk') == [Lap('tarokk', 'II'), Lap('tarokk', 'Skiz')]
 
 
+k = Jatekos("Kristóf")
+h = Jatekos("Hoba")
+vg = Jatekos("Vinczeg")
+a = Jatekos("Attila")
+
+
 def test_jatek():
     """
     játék próba
     """
-    k = Jatekos("Kristóf")
-    h = Jatekos("Hoba")
-    vg = Jatekos("Vinczeg")
-    a = Jatekos("Attila")
-
     asztal = Asztal()
     asztal.leul(k)
     with pytest.raises(AssertionError):
@@ -119,3 +121,12 @@ def test_jatek():
     for jatekos in [h, a, vg, k]:
         pont = sum([lap.ertek() for lap in jatekos.elvitt])
         logging.info(f"{jatekos} elvitt {int(len(jatekos.elvitt) / 4)} ütést, {pont} pont értékben: {jatekos.elvitt}")
+
+
+def test_bemondasok():
+    aktualis_utes = [Hivas(k, XXI),
+                     Hivas(h, XX),
+                     Hivas(a, Skiz),
+                     Hivas(vg, Pagát)]
+    assert XXI_fogas.check(None, aktualis_utes)
+

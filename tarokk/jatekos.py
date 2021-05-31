@@ -4,8 +4,8 @@ from tarokk.kartya import *
 class Jatekos:
     def __init__(self, nev):
         self.nev = nev
-        self.lapok: list[Lap] = []
         self.talon: list[Lap] = []
+        self.lapok: list[Lap] = []
         self.elvitt: list[Lap] = []
 
     def __str__(self):
