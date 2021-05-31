@@ -16,6 +16,9 @@ class Jatekos:
     def __repr__(self):
         return self.nev
 
+    def csapat(self, parok: Parok):
+        return parok.felvevok if self in parok.felvevok else parok.ellenpar
+
     def kirakhato_lapok(self, szin):
         """
         játékos hívott színre rakható lapjai

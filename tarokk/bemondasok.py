@@ -22,7 +22,7 @@ class Bemondas:
     def is_csendes(self):
         return self.bemondta is None
 
-    def ertekeles(self, nyertes, kommentar=""):
+    def ertekeles(self, nyertes_par, kommentar=""):
         if self.meglett is None:
             self.meglett = True
             return f"{self.bemondas_neve}, {kommentar}, {self.forint()} forintért"
@@ -37,8 +37,9 @@ class XXI_fogas(Bemondas):
     def check(self, parok, utesek, aktualis_utes):
         xxi: Jatekos = next(iter([hivas.jatekos for hivas in aktualis_utes if hivas.lap == XXI]), None)
         skiz: Jatekos = next(iter([hivas.jatekos for hivas in aktualis_utes if hivas.lap == Skiz]), None)
+
         if xxi and skiz:
-            return self.ertekeles(f"{skiz} megfogta {xxi} XXI-ét")
+            return self.ertekeles(skiz.csapat(parok), f"{skiz} megfogta {xxi} XXI-ét")
 
 
 class Pagat_ulti(Bemondas):
@@ -50,7 +51,7 @@ class Pagat_ulti(Bemondas):
     def check(self, parok, utesek, aktualis_utes):
         viszi = ki_viszi(aktualis_utes)
         if len(utesek) == 8 and viszi.lap == Pagat:
-            return self.ertekeles(f"{viszi.jatekos}")
+            return self.ertekeles(viszi.jatekos.csapat(parok), f"{viszi.jatekos}")
 
 
 
@@ -63,7 +64,7 @@ class Sas_ulti(Bemondas):
     def check(self, parok, utesek, aktualis_utes):
         viszi = ki_viszi(aktualis_utes)
         if len(utesek) == 8 and viszi.lap == II:
-            return self.ertekeles(f"{viszi.jatekos} csinálta")
+            return self.ertekeles(viszi.jatekos.csapat(parok), f"{viszi.jatekos} csinálta")
 
 
 class Tuletroa(Bemondas):

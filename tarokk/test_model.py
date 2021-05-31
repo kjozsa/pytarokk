@@ -8,7 +8,8 @@ vg = Jatekos("Vinczeg")
 a = Jatekos("Attila")
 
 parok = Parok([k, h], [a, vg])
-
+assert(h.is_felvevo(parok))
+assert(a.is_ellenpar(parok))
 
 def test_pakli():
     """
