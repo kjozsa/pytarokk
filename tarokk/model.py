@@ -1,6 +1,7 @@
 import collections
 from random import shuffle, choice
 import logging
+from typing import List, Any
 
 tarokkok = "I II III IV V VI VII VIII IX X XI XII XIII XIV XV XVI XVII XVIII XIX XX XXI Skiz".split()
 honorok = "I XXI Skiz".split()
@@ -51,11 +52,12 @@ class Lap:
 
 
 class Pakli:
-    _lapok = [Lap(szin, figura)
-              for szin in szinek
-              for figura in figurak] + \
-             [Lap("tarokk", tarokk) for tarokk in tarokkok]
-    shuffle(_lapok)
+    def __init__(self):
+        self._lapok = [Lap(szin, figura)
+                       for szin in szinek
+                       for figura in figurak] + \
+                      [Lap("tarokk", tarokk) for tarokk in tarokkok]
+        shuffle(self._lapok)
 
     def __len__(self):
         return len(self._lapok)
@@ -69,11 +71,33 @@ class Pakli:
 Hivas = collections.namedtuple('Hivas', ['jatekos', 'lap'])
 
 
+class Jatekos:
+    def __init__(self, nev):
+        self.nev = nev
+        self.lapok: list[Lap] = []
+        self.talon: list[Lap] = []
+        self.elvitt: list[Lap] = []
+
+    def __str__(self):
+        return self.nev
+
+    def kirakhato_lapok(self, szin):
+        olyan_szinu = [lap for lap in self.lapok if lap.szin == szin]
+        tarokkok = [lap for lap in self.lapok if lap.is_tarokk()]
+
+        if len(olyan_szinu) != 0:
+            return olyan_szinu
+        if len(tarokkok) != 0:
+            return tarokkok
+        return self.lapok
+
+
 class Asztal:
-    jatekosok = []
-    hivo = ""
-    talon: list[Lap] = []
-    utes: list[Hivas] = []
+    def __init__(self):
+        self.jatekosok: list[Jatekos] = []
+        self.hivo: Jatekos = None
+        self.talon: list[Lap] = []
+        self.utes: list[Hivas] = []
 
     def leul(self, jatekos):
         assert jatekos not in self.jatekosok
@@ -117,7 +141,8 @@ class Asztal:
 
         if len(self.utes) == 4:
             viszi = self.kiviszi(self.utes)
-            logging.info(f"Legerősebb a {viszi.lap}, elvitte {viszi.jatekos}")
+            logging.info(f"Legerősebb a {viszi.lap}, elvitte {viszi.jatekos} {id(viszi.jatekos.elvitt)}")
+            viszi.jatekos.elvitt.extend([x.lap for x in self.utes])
             self.utes = []
             self.hivo = viszi.jatekos
 
@@ -129,24 +154,3 @@ class Asztal:
     @staticmethod
     def kiviszi(utes):
         return max(utes, key=lambda hivas: hivas.lap.relativ_erosseg(utes[0].lap))
-
-
-class Jatekos:
-    lapok = []
-    talon = []
-
-    def __init__(self, nev):
-        self.nev = nev
-
-    def __str__(self):
-        return self.nev
-
-    def kirakhato_lapok(self, szin):
-        olyan_szinu = [lap for lap in self.lapok if lap.szin == szin]
-        tarokkok = [lap for lap in self.lapok if lap.is_tarokk()]
-
-        if len(olyan_szinu) != 0:
-            return olyan_szinu
-        if len(tarokkok) != 0:
-            return tarokkok
-        return self.lapok

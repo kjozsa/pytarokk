@@ -60,13 +60,18 @@ def test_jatek():
 
     asztal.rak(k, k.lapok[0])
     with pytest.raises(AssertionError):
-        asztal.rak(k, k.lapok[0])   # már rakott
+        asztal.rak(k, k.lapok[0])  # már rakott
 
     with pytest.raises(AssertionError):
-        asztal.rak(h, a.lapok[0])   # nem az ő lapja
+        asztal.rak(h, a.lapok[0])  # nem az ő lapja
 
     for i in range(35):
         asztal.kovetkezo_rak_random()
+
+    # játék vége
+    assert len([*h.elvitt, *k.elvitt, *a.elvitt, *vg.elvitt]) == 42 - 6
+    for jatekos in [h, a, vg, k]:
+        logging.info(f"{jatekos} elvitt {int(len(jatekos.elvitt) / 4)} ütést: {jatekos.elvitt}")
 
 
 def test_kiviszi():
