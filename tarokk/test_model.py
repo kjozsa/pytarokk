@@ -38,6 +38,49 @@ def test_lap():
         Lap("káró", "NOSUCH")
 
 
+def test_kiviszi():
+    assert Asztal.kiviszi([
+        Hivas('A', Lap('káró', 'lovas')),
+        Hivas('B', Lap('tarokk', 'I')),
+        Hivas('C', Lap('tarokk', 'XVI')),
+        Hivas('D', Lap('pikk', 'dáma'))
+    ]).jatekos == 'C'
+
+    assert Asztal.kiviszi([
+        Hivas('C', Lap('tarokk', 'XVI')),
+        Hivas('A', Lap('káró', 'lovas')),
+        Hivas('B', Lap('tarokk', 'I')),
+        Hivas('D', Lap('pikk', 'dáma'))
+    ]).jatekos == 'C'
+
+    assert Asztal.kiviszi([
+        Hivas('D', Lap('pikk', 'dáma')),
+        Hivas('A', Lap('káró', 'lovas')),
+        Hivas('B', Lap('tarokk', 'I')),
+        Hivas('C', Lap('tarokk', 'XVI'))
+    ]).jatekos == 'C'
+
+    assert Asztal.kiviszi([
+        Hivas('A', Lap('treff', 'ász')),
+        Hivas('B', Lap('pikk', 'lovas')),
+        Hivas('C', Lap('kőr', 'király')),
+        Hivas('D', Lap('káró', 'dáma'))
+    ]).jatekos == 'A'
+
+
+def test_kirakhato_lapok():
+    """
+    színre szín, ha nincs, tarokk
+    """
+    k = Jatekos('Kristóf')
+    k.lapok = [Lap('treff', 'lovas'),
+               Lap('tarokk', 'II'),
+               Lap('tarokk', 'Skiz')]
+    assert k.kirakhato_lapok('treff') == [Lap('treff', 'lovas')]
+    assert k.kirakhato_lapok('pikk') == [Lap('tarokk', 'II'), Lap('tarokk', 'Skiz')]
+    assert k.kirakhato_lapok('tarokk') == [Lap('tarokk', 'II'), Lap('tarokk', 'Skiz')]
+
+
 def test_jatek():
     """
     játék próba
@@ -76,33 +119,3 @@ def test_jatek():
     for jatekos in [h, a, vg, k]:
         pont = sum([lap.ertek() for lap in jatekos.elvitt])
         logging.info(f"{jatekos} elvitt {int(len(jatekos.elvitt) / 4)} ütést, {pont} pont értékben: {jatekos.elvitt}")
-
-
-def test_kiviszi():
-    assert Asztal.kiviszi([
-        Hivas('A', Lap('káró', 'lovas')),
-        Hivas('B', Lap('tarokk', 'I')),
-        Hivas('C', Lap('tarokk', 'XVI')),
-        Hivas('D', Lap('pikk', 'dáma'))
-    ]).jatekos == 'C'
-
-    assert Asztal.kiviszi([
-        Hivas('C', Lap('tarokk', 'XVI')),
-        Hivas('A', Lap('káró', 'lovas')),
-        Hivas('B', Lap('tarokk', 'I')),
-        Hivas('D', Lap('pikk', 'dáma'))
-    ]).jatekos == 'C'
-
-    assert Asztal.kiviszi([
-        Hivas('D', Lap('pikk', 'dáma')),
-        Hivas('A', Lap('káró', 'lovas')),
-        Hivas('B', Lap('tarokk', 'I')),
-        Hivas('C', Lap('tarokk', 'XVI'))
-    ]).jatekos == 'C'
-
-    assert Asztal.kiviszi([
-        Hivas('A', Lap('treff', 'ász')),
-        Hivas('B', Lap('pikk', 'lovas')),
-        Hivas('C', Lap('kőr', 'király')),
-        Hivas('D', Lap('káró', 'dáma'))
-    ]).jatekos == 'A'

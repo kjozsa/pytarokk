@@ -1,6 +1,5 @@
 import logging
 from random import choice
-from tarokk.kartya import *
 from tarokk.jatekos import *
 
 
@@ -9,6 +8,7 @@ class Asztal:
         self.jatekosok: list[Jatekos] = []
         self.talon: list[Lap] = []
         self.utes: list[Hivas] = []
+        self.hivo: Jatekos = None
 
     def leul(self, jatekos):
         assert jatekos not in self.jatekosok

@@ -1,3 +1,6 @@
+from tarokk.kartya import *
+
+
 class Jatekos:
     def __init__(self, nev):
         self.nev = nev
@@ -9,11 +12,17 @@ class Jatekos:
         return self.nev
 
     def kirakhato_lapok(self, szin):
-        olyan_szinu = [lap for lap in self.lapok if lap.szin == szin]
+        """
+        játékos hívott színre rakható lapjai
+        """
+        if szin is None:
+            return self.lapok
+
+        egyezo_szinuek = [lap for lap in self.lapok if lap.szin == szin]
         tarokkok = [lap for lap in self.lapok if lap.is_tarokk()]
 
-        if len(olyan_szinu) != 0:
-            return olyan_szinu
+        if len(egyezo_szinuek) != 0:
+            return egyezo_szinuek
         if len(tarokkok) != 0:
             return tarokkok
         return self.lapok
