@@ -12,6 +12,8 @@ class Asztal:
         self.talon: list[Lap] = []
         self.felvevo_talon: list[Lap] = []
         self.ellenpar_talon: list[Lap] = []
+        self.bemondasok: list[Bemondas] = []
+        self.oszto: Jatekos = None
         self.utesek: list[list[Hivas]] = []
         self.hivo: Jatekos = None
         self.aktualis_utes: list[Hivas] = []
@@ -21,23 +23,32 @@ class Asztal:
         assert jatekos not in self.jatekosok
         self.jatekosok.append(jatekos)
         if len(self.jatekosok) == 4:
-            self.osztas()
+            self.osztas(self.jatekosok[0])
 
-    def osztas(self):
-        logging.info('új osztás')
+    def osztas(self, oszto: Jatekos):
+        self.oszto = oszto
+        kezdo_jatekos = self.ki_jon_utana(self.oszto)
+        logging.info(f'új osztás, az osztó: {self.oszto}, kezd: {kezdo_jatekos}')
+
         pakli = Pakli()
         self.talon = pakli.huz(6)
-        for jatekos in self.jatekosok:
+
+        jatekos = kezdo_jatekos
+        for i in range(4):
             jatekos.lapok = sorted(pakli.huz(9))
             logging.warning(f"{jatekos}: {jatekos.lapok}")
+            jatekos = self.ki_jon_utana(jatekos)
 
         # TODO LICIT !!!
 
         self.felvevo_talon = self.talon[3:]
         self.ellenpar_talon = self.talon[:3]
 
-        self.hivo = self.jatekosok[0]
+        self.hivo = self.jatekosok[0]  # TODO bemondasbol derul ki
         self.parok.felvevok, self.parok.ellenpar = (self.jatekosok[:2], self.jatekosok[2:])
+
+        self.bemondasok.append(Parti(self.hivo, 1))
+        self.bemondasok.extend([XXI_fogas(), Pagat_ulti(), Sas_ulti(), Tuletroa()])  # csendes figurak
 
     def kovetkezo_jatekos(self):
         if len(self.aktualis_utes) == 0:
@@ -73,7 +84,7 @@ class Asztal:
         logging.info(f"Legerősebb a {viszi.lap}, elvitte {viszi.jatekos}")
         viszi.jatekos.elvisz([x.lap for x in self.aktualis_utes])
 
-        for bemondas in bemondasok:
+        for bemondas in self.bemondasok:
             result = bemondas.check(self.parok, self.utesek, self.aktualis_utes)
             if result is not None:
                 logging.critical(f"!! ## {result} ## !!")
@@ -86,7 +97,6 @@ class Asztal:
         else:
             self.hivo = viszi.jatekos
 
-
     def kovetkezo_rak_random(self):
         jatekos = self.kovetkezo_jatekos()
         lap = choice(jatekos.kirakhato_lapok(self.hivas_szine()))
@@ -96,25 +106,24 @@ class Asztal:
         logging.info("Vége a játéknak")
         self.parok.felvevok[0].elvisz(self.felvevo_talon)
         self.parok.ellenpar[0].elvisz(self.ellenpar_talon)
-        result = Parti(self.licitalt_jatek).check(self.parok, self.utesek, None)
+        result = Parti(self.parok.felvevok[0], self.licitalt_jatek).check(self.parok, self.utesek, None)
         logging.critical(f"!! ## {result} ## !!")
 
 
 def talon_kiosztas(self, licitalt_jatek, talon, parok):
-        talon_kioszt = [
-            [0, 2, 2, 2],
-            [1, 2, 2, 1],
-            [2, 2, 1, 1],
-            [3, 1, 1, 1]
-        ]
-        talon_pakli = Pakli(talon)
-        elosztas = talon_kioszt[licitalt_jatek]
-        felvevo = parok.felvevok[0]
-        felvevo.elvisz(talon_pakli.huz(elosztas[0]))
-        kovetkezo = self.ki_jon_utana(felvevo)
-        kovetkezo.elvisz(talon_pakli.huz(elosztas[1]))
-        kovetkezo = self.ki_jon_utana(kovetkezo)
-        kovetkezo.elvisz(talon_pakli.huz(elosztas[2]))
-        kovetkezo = self.ki_jon_utana(kovetkezo)
-        kovetkezo.elvisz(talon_pakli.huz(elosztas[3]))
-
+    talon_kioszt = [
+        [0, 2, 2, 2],
+        [1, 2, 2, 1],
+        [2, 2, 1, 1],
+        [3, 1, 1, 1]
+    ]
+    talon_pakli = Pakli(talon)
+    elosztas = talon_kioszt[licitalt_jatek]
+    felvevo = parok.felvevok[0]
+    felvevo.elvisz(talon_pakli.huz(elosztas[0]))
+    kovetkezo = self.ki_jon_utana(felvevo)
+    kovetkezo.elvisz(talon_pakli.huz(elosztas[1]))
+    kovetkezo = self.ki_jon_utana(kovetkezo)
+    kovetkezo.elvisz(talon_pakli.huz(elosztas[2]))
+    kovetkezo = self.ki_jon_utana(kovetkezo)
+    kovetkezo.elvisz(talon_pakli.huz(elosztas[3]))

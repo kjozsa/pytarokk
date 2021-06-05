@@ -22,18 +22,19 @@ class Jatekos:
     def elvisz(self, lapok: list[Lap]):
         self.elvitt.extend(lapok)
 
-    def kirakhato_lapok(self, szin):
+    def kirakhato_lapok(self, hivas_szine):
         """
         játékos hívott színre rakható lapjai
         """
-        if szin is None:
+        if hivas_szine is None:
             return self.lapok
 
-        egyezo_szinuek = [lap for lap in self.lapok if lap.szin == szin]
-        tarokkok = [lap for lap in self.lapok if lap.is_tarokk()]
-
+        egyezo_szinuek = [lap for lap in self.lapok if lap.szin == hivas_szine]
         if len(egyezo_szinuek) != 0:
             return egyezo_szinuek
+
+        tarokkok = [lap for lap in self.lapok if lap.is_tarokk()]
         if len(tarokkok) != 0:
             return tarokkok
-        return self.lapok
+        else:
+            return self.lapok

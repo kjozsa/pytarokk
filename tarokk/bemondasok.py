@@ -49,8 +49,10 @@ class Pagat_ulti(Bemondas):
         super().__init__("Pagát ulti")
 
     def check(self, parok, utesek, aktualis_utes):
+        if len(utesek) < 8:
+            return
         viszi = ki_viszi(aktualis_utes)
-        if len(utesek) == 8 and viszi.lap == Pagat:
+        if viszi.lap == Pagat:
             return self.ertekeles(viszi.jatekos.csapat(parok), f"{viszi.jatekos}")
 
 
@@ -61,8 +63,10 @@ class Sas_ulti(Bemondas):
         super().__init__("Sas ulti")
 
     def check(self, parok, utesek, aktualis_utes):
+        if len(utesek) < 8:
+            return
         viszi = ki_viszi(aktualis_utes)
-        if len(utesek) == 8 and viszi.lap == II:
+        if viszi.lap == II:
             return self.ertekeles(viszi.jatekos.csapat(parok), f"{viszi.jatekos} csinálta")
 
 
@@ -83,9 +87,9 @@ class Tuletroa(Bemondas):
 
 
 class Parti(Bemondas):
-    def __init__(self, licitalt_jatek):
+    def __init__(self, licitalo, licitalt_jatek):
         super().__init__("Parti")
-        self.bemondta = True
+        self.bemondta = licitalo
         self.ertek = 4 - licitalt_jatek
 
     def check(self, parok, utesek, aktualis_utes):
@@ -98,6 +102,3 @@ class Parti(Bemondas):
         ellenpar_pont = sum([lap.ertek() for lap in ellenpare])
         if ellenpar_pont >= 47:
             return self.ertekeles(parok.ellenpar, f"az ellenpáré {ellenpar_pont} ponttal")
-
-
-bemondasok = [XXI_fogas(), Pagat_ulti(), Sas_ulti(), Tuletroa()]
