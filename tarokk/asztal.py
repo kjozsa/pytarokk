@@ -48,7 +48,7 @@ class Asztal:
         self.parok.felvevok, self.parok.ellenpar = (self.jatekosok[:2], self.jatekosok[2:])
 
         self.bemondasok.append(Parti(self.hivo, 3))
-        self.bemondasok.extend([XXI_fogas(), Pagat_ulti(), Sas_ulti(), Tuletroa()])  # csendes figurak
+        self.bemondasok.extend([XXI_fogas(), Pagat_ulti(), Sas_ulti(), Tuletroa(), NegyKiraly()])  # csendes figurak
 
     def kovetkezo_jatekos(self):
         if len(self.aktualis_utes) == 0:

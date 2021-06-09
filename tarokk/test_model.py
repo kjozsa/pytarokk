@@ -10,7 +10,8 @@ vg = Jatekos("Vinczeg")
 a = Jatekos("Attila")
 
 parok = Parok([k, h], [a, vg])
-assert(k in h.csapat(parok))
+assert (k in h.csapat(parok))
+
 
 def test_pakli():
     """
@@ -144,6 +145,7 @@ def test_Sas_ulti():
     result = Sas_ulti().check(parok, utesek, aktualis_utes)
     logging.info(result)
     assert result
+
 
 def test_bukott_rekontra_Pagat_ulti():
     pagat_ulti = Pagat_ulti()

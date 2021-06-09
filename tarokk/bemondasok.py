@@ -9,6 +9,10 @@ XXI = Lap('tarokk', 'XXI')
 Skiz = Lap('tarokk', 'Skiz')
 
 
+def par_elvitt_lapjai(par):
+    return [lap for sublist in [jatekos.elvitt for jatekos in par] for lap in sublist]
+
+
 class Bemondas:
     def __init__(self, bemondas_neve):
         self.bemondta = None
@@ -29,11 +33,11 @@ class Bemondas:
 
     def ertekeles(self, nyertes_par, kommentar=""):
         if self.meglett is None:
-            self.meglett = (self.bemondta in nyertes_par)
+            self.meglett = self.is_csendes() or self.bemondta in nyertes_par
             return f"{self.bemondas_neve}, {kommentar}, {self.forint()} forintért"
 
     def kontraz(self):
-        if self.kontra < 6:
+        if self.kontra <= 6:
             self.kontra += 1
 
 
@@ -102,12 +106,24 @@ class Parti(Bemondas):
         self.ertek = 4 - licitalt_jatek
 
     def check(self, parok, utesek, aktualis_utes):
-        felvevoke = [lap for sublist in [jatekos.elvitt for jatekos in parok.felvevok] for lap in sublist]
-        felvevo_pont = sum([lap.ertek() for lap in felvevoke])
+        felvevo_pont = sum([lap.ertek() for lap in par_elvitt_lapjai(parok.felvevok)])
         if felvevo_pont > 47:
             return self.ertekeles(parok.felvevok, f"a felvevő páré {felvevo_pont} ponttal")
 
-        ellenpare = [lap for sublist in [jatekos.elvitt for jatekos in parok.ellenpar] for lap in sublist]
-        ellenpar_pont = sum([lap.ertek() for lap in ellenpare])
+        ellenpar_pont = sum([lap.ertek() for lap in par_elvitt_lapjai(parok.ellenpar)])
         if ellenpar_pont >= 47:
             return self.ertekeles(parok.ellenpar, f"az ellenpáré {ellenpar_pont} ponttal")
+
+
+class NegyKiraly(Bemondas):
+    ertek = 2
+
+    def __init__(self):
+        super().__init__("4 király")
+
+    def check(self, parok, utesek, aktualis_utes):
+        if len([lap for lap in par_elvitt_lapjai(parok.felvevok) if lap.figura == 'király']) == 4:
+            return self.ertekeles(parok.felvevok, f"a felvevő párnak")
+
+        if len([lap for lap in par_elvitt_lapjai(parok.ellenpar) if lap.figura == 'király']) == 4:
+            return self.ertekeles(parok.ellenpar, f"az ellenpárnak")
