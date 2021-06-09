@@ -47,7 +47,7 @@ class Asztal:
         self.hivo = self.jatekosok[0]  # TODO bemondasbol derul ki
         self.parok.felvevok, self.parok.ellenpar = (self.jatekosok[:2], self.jatekosok[2:])
 
-        self.bemondasok.append(Parti(self.hivo, 1))
+        self.bemondasok.append(Parti(self.hivo, 3))
         self.bemondasok.extend([XXI_fogas(), Pagat_ulti(), Sas_ulti(), Tuletroa()])  # csendes figurak
 
     def kovetkezo_jatekos(self):
@@ -83,31 +83,26 @@ class Asztal:
         viszi = ki_viszi(self.aktualis_utes)
         logging.info(f"Legerősebb a {viszi.lap}, elvitte {viszi.jatekos}")
         viszi.jatekos.elvisz([x.lap for x in self.aktualis_utes])
+        self.utesek.append(self.aktualis_utes)
+
+        if len(self.utesek) == 9:
+            logging.info("$$- Vége a játéknak -$$")
+            self.parok.felvevok[0].elvisz(self.felvevo_talon)
+            self.parok.ellenpar[0].elvisz(self.ellenpar_talon)
+        else:
+            self.hivo = viszi.jatekos
 
         for bemondas in self.bemondasok:
             result = bemondas.check(self.parok, self.utesek, self.aktualis_utes)
             if result is not None:
                 logging.critical(f"!! ## {result} ## !!")
 
-        self.utesek.append(self.aktualis_utes)
         self.aktualis_utes = []
-
-        if len(self.utesek) == 9:
-            self.jatek_vege()
-        else:
-            self.hivo = viszi.jatekos
 
     def kovetkezo_rak_random(self):
         jatekos = self.kovetkezo_jatekos()
         lap = choice(jatekos.kirakhato_lapok(self.hivas_szine()))
         self.rak(jatekos, lap)
-
-    def jatek_vege(self):
-        logging.info("Vége a játéknak")
-        self.parok.felvevok[0].elvisz(self.felvevo_talon)
-        self.parok.ellenpar[0].elvisz(self.ellenpar_talon)
-        result = Parti(self.parok.felvevok[0], self.licitalt_jatek).check(self.parok, self.utesek, None)
-        logging.critical(f"!! ## {result} ## !!")
 
 
 def talon_kiosztas(self, licitalt_jatek, talon, parok):
