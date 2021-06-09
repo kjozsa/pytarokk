@@ -1,3 +1,5 @@
+import logging
+
 from tarokk.asztal import *
 from tarokk.bemondasok import *
 import pytest
@@ -142,3 +144,17 @@ def test_Sas_ulti():
     result = Sas_ulti().check(parok, utesek, aktualis_utes)
     logging.info(result)
     assert result
+
+def test_bukott_rekontra_Pagat_ulti():
+    pagat_ulti = Pagat_ulti()
+    pagat_ulti.bemondta = k
+    pagat_ulti.kontraz()
+    pagat_ulti.kontraz()
+    utesek = [None] * 8
+    aktualis_utes = [Hivas(k, Lap('treff', 'bubi')),
+                     Hivas(h, Lap('treff', 'dáma')),
+                     Hivas(a, Lap('pikk', 'király')),
+                     Hivas(vg, II)]
+    result = pagat_ulti.check(parok, utesek, aktualis_utes)
+    assert result is None
+    assert pagat_ulti.forint() == -400

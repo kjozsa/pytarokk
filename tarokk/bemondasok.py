@@ -13,19 +13,28 @@ class Bemondas:
     def __init__(self, bemondas_neve):
         self.bemondta = None
         self.bemondas_neve = bemondas_neve
-        self.kontra = 1
-        self.meglett = None
+        self.kontra = 0
+        self.meglett = None  # True == nyert, False == bukott
 
     def forint(self):
-        return 10 * int(self.ertek * self.kontra * (0.5 if self.is_csendes() else 1))
+        return 10 * int(
+            self.ertek
+            * pow(2, self.kontra)
+            * (0.5 if self.is_csendes() else 1)
+            * (1 if self.meglett is True else -1)
+        )
 
     def is_csendes(self):
         return self.bemondta is None
 
     def ertekeles(self, nyertes_par, kommentar=""):
         if self.meglett is None:
-            self.meglett = True
+            self.meglett = (self.bemondta in nyertes_par)
             return f"{self.bemondas_neve}, {kommentar}, {self.forint()} forintért"
+
+    def kontraz(self):
+        if self.kontra < 6:
+            self.kontra += 1
 
 
 class XXI_fogas(Bemondas):
