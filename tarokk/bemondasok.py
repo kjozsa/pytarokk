@@ -15,12 +15,15 @@ def par_elvitt_lapjai(par):
 
 class Bemondas:
     def __init__(self, bemondas_neve):
-        self.bemondta = None
         self.bemondas_neve = bemondas_neve
+        self.bemondta = None
         self.kontra = 0
         self.meglett = None  # True == nyert, False == bukott
 
     def forint(self):
+        """
+
+        """
         return 10 * int(
             self.ertek
             * pow(2, self.kontra)
@@ -62,7 +65,7 @@ class Pagat_ulti(Bemondas):
         super().__init__("Pagát ulti")
 
     def check(self, parok, utesek, aktualis_utes):
-        if len(utesek) < 8:
+        if len(utesek) < 9:
             return
         viszi = ki_viszi(aktualis_utes)
         if viszi.lap == Pagat:
